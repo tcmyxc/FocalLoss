@@ -1,4 +1,4 @@
-# Focal Loss for multilabel classification
+# Focal Loss for Multilabel Classification
 
 PyTorch 实现
 
