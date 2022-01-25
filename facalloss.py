@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# 参考了
+# 作者：徐文祥(tcmyxc)
+# 参考了：
 # 1. https://github.com/clcarwin/focal_loss_pytorch/blob/master/focalloss.py
 # 2. https://github.com/c0nn3r/RetinaNet/blob/master/focal_loss.py
 
