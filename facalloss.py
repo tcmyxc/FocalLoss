@@ -8,7 +8,7 @@ import torch
 import torch.nn.functional as F
 
 
-def focal_loss(logits, labels, gamma=2):
+def focal_loss(logits, labels, gamma=2, reduction="mean"):
     r"""
     focal loss for multi classification（简洁版实现）
 
@@ -24,13 +24,23 @@ def focal_loss(logits, labels, gamma=2):
     pt = torch.exp(log_pt)
     weights = (1 - pt) ** gamma
     fl = weights * ce_loss
-    fl = fl.mean()
+
+    if reduction == "sum":
+        fl = fl.sum()
+    elif reduction == "mean":
+        fl = fl.mean()
+    else:
+        raise ValueError(f"reduction '{reduction}' is not valid")
     return fl
 
 
-def balanced_focal_loss(logits, labels, alpha=0.25, gamma=2):
-    r"""带平衡因子的 focal loss"""
-    return alpha * focal_loss(logits, labels, gamma)
+def balanced_focal_loss(logits, labels, alpha=0.25, gamma=2, reduction="mean"):
+    r"""
+    带平衡因子的 focal loss，这里的 alpha 在多分类中应该是个向量，向量中的每个值代表类别的权重。
+    但是为了简单起见，我们假设每个类一样，直接传 0.25。
+    如果是长尾数据集，则应该自行构造 alpha 向量，同时改写 focal loss 函数。
+    """
+    return alpha * focal_loss(logits, labels, gamma, reduction)
 
 
 def focal_lossv1(logits, labels, gamma=2):
@@ -57,5 +67,6 @@ if __name__ == "__main__":
     logits = torch.tensor([[0.3, 0.6, 0.9, 1], [0.6, 0.4, 0.9, 0.5]])
     labels = torch.tensor([1, 3])
     print(focal_loss(logits, labels))
+    print(focal_loss(logits, labels, reduction="sum"))
     print(focal_lossv1(logits, labels))
     print(balanced_focal_loss(logits, labels))
