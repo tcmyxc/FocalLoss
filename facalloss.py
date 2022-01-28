@@ -55,7 +55,7 @@ def focal_lossv1(logits, labels, gamma=2):
     log_pt = F.log_softmax(logits, dim=-1)  # 这里相当于 CE loss
     pt = torch.exp(log_pt)  # 通过 softmax 函数后打的分
     labels = labels.view(-1, 1)  # 多加一个维度，为使用 gather 函数做准备
-    pt = pt.gather(1, labels)  # 挑选出真实值对应的 softmax 打分
+    pt = pt.gather(1, labels)  # 挑选出真实值对应的 softmax 打分，也可以使用独热编码实现
     ce_loss = -torch.log(pt)
     weights = (1 - pt) ** gamma
     fl = weights * ce_loss
